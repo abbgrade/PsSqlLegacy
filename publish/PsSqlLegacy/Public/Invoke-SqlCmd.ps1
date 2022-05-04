@@ -54,7 +54,7 @@ function Invoke-SqlCmd
     )
 
     # soon...
-    # Write-Warning 'This cmdlet is deprecated use PsSqlClient or PsSmo instead'
+    #Write-Warning 'This cmdlet is deprecated use PsSqlClient or PsSmo instead'
 
     if ( -not $Module:SqlCmd ) {
         throw "SqlCmd is not inizialized. Please run Initialize-SqlCmd."

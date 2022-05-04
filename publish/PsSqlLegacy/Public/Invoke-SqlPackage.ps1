@@ -72,9 +72,6 @@ function Invoke-SqlPackage
         [hashtable] $Variables = @{}
     )
 
-    # soon...
-    # Write-Warning 'This cmdlet is deprecated use PsDac instead'
-
     if ( -not $Module:SqlPackage ) {
         throw "SqlPackage is not inizialized. Please run Initialize-SqlPackage."
     }
