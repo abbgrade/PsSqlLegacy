@@ -56,7 +56,7 @@ function Invoke-SqlCmd
     # soon...
     # Write-Warning 'This cmdlet is deprecated use PsSqlClient or PsSmo instead'
 
-    if ( -not $Module:SqlCmd ) {
+    if ( -not $Global:SqlCmd ) {
         throw "SqlCmd is not inizialized. Please run Initialize-SqlCmd."
     }
 
@@ -127,7 +127,7 @@ function Invoke-SqlCmd
 
     $process = New-Object System.Diagnostics.Process
 
-    $process.StartInfo.FileName = $Module:SqlCmd
+    $process.StartInfo.FileName = $Global:SqlCmd
     $process.StartInfo.RedirectStandardError = $true
     $process.StartInfo.RedirectStandardOutput = $true
     $process.StartInfo.UseShellExecute = $false

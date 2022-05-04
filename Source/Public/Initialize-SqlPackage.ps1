@@ -7,5 +7,5 @@ function Initialize-SqlPackage {
         [System.IO.FileInfo] $Path
     )
 
-    $Module:SqlPackage = $Path
+    $Global:SqlPackage = $Path
 }

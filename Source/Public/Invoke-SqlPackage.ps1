@@ -4,7 +4,7 @@ function Invoke-SqlPackage
 
     .LINK
     https://docs.microsoft.com/de-de/sql/tools/sqlpackage?view=sql-server-ver15
-    
+
     #>
 
     [CmdletBinding()]
@@ -75,7 +75,7 @@ function Invoke-SqlPackage
     # soon...
     # Write-Warning 'This cmdlet is deprecated use PsDac instead'
 
-    if ( -not $Module:SqlPackage ) {
+    if ( -not $Global:SqlPackage ) {
         throw "SqlPackage is not inizialized. Please run Initialize-SqlPackage."
     }
 
@@ -128,10 +128,10 @@ function Invoke-SqlPackage
     }
 
     #region Prepare process
-    
+
     $process = New-Object System.Diagnostics.Process
 
-    $process.StartInfo.FileName = $Module:SqlPackage
+    $process.StartInfo.FileName = $Global:SqlPackage
     $process.StartInfo.RedirectStandardError = $true
     $process.StartInfo.RedirectStandardOutput = $true
     $process.StartInfo.UseShellExecute = $false
@@ -141,7 +141,7 @@ function Invoke-SqlPackage
     #endregion
 
     Write-Verbose "$( $process.StartInfo.FileName ) $( $process.StartInfo.Arguments )"
-    
+
     #region Start process
 
     $outputBuffer = New-Object System.Text.StringBuilder

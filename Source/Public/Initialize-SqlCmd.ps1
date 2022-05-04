@@ -7,5 +7,5 @@ function Initialize-SqlCmd {
         [System.IO.FileInfo] $Path
     )
 
-    $Module:SqlCmd = $Path
+    $Global:SqlCmd = $Path
 }
