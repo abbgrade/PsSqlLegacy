@@ -30,7 +30,7 @@ CompanyName = ''
 Copyright = '(c) Steffen Kampmann. All rights reserved.'
 
 # Description of the functionality provided by this module
-# Description = ''
+Description = 'PowerShell Wrapper for Legacy Tools SqlCmd and SqlPackage.'
 
 # Minimum version of the PowerShell engine required by this module
 # PowerShellVersion = ''
@@ -72,7 +72,7 @@ Copyright = '(c) Steffen Kampmann. All rights reserved.'
 FunctionsToExport = @()
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
-CmdletsToExport = 'Invoke-SqlCmd', 'Invoke-SqlPackage', 'Initialize-SqlCmd', 
+CmdletsToExport = 'Invoke-SqlCmd', 'Invoke-SqlPackage', 'Initialize-SqlCmd',
                'Initialize-SqlPackage'
 
 # Variables to export from this module
