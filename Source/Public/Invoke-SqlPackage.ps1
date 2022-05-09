@@ -2,6 +2,16 @@ function Invoke-SqlPackage
 {
     <#
 
+    .SYNOPSIS
+    Executes SQLCMD
+
+    .DESCRIPTION
+    Wrapper tp the commandline tool SQLPACKAGE.
+    It provides parameter validation, output and error handling.
+
+    .NOTES
+    Check https://github.com/abbgrade/PsDac and https://github.com/abbgrade/PsSmo if one of them already supports your use case. They provide better PowerShell integration.
+
     .LINK
     https://docs.microsoft.com/de-de/sql/tools/sqlpackage?view=sql-server-ver15
 
@@ -9,65 +19,83 @@ function Invoke-SqlPackage
 
     [CmdletBinding()]
     param(
+        # Flag if a install script should be created.
         [Parameter( Mandatory, ParameterSetName='Script' )]
         [string] $Script,
 
+        # Flag if a database should be published.
         [Parameter( Mandatory, ParameterSetName='Publish' )]
         [switch] $Publish,
 
+        # Path to the dacpac file.
         [Parameter( Mandatory )]
         [ValidateScript({ $_.Exists })]
         [System.IO.FileInfo] $DacPac,
 
+        # Name of the SQL Server Instance to publish the dacpac to.
         [Parameter( Mandatory, ValueFromPipelineByPropertyName )]
         [Alias('ServerInstance', 'DataSource')]
         [ValidateNotNullOrEmpty()]
         [string] $TargetServerName,
 
+        # Username for the login.
         [Parameter( Mandatory=$false, ValueFromPipelineByPropertyName )]
         [Alias('Username')]
         [string] $TargetUser,
 
+        # Password for the login.
         [Parameter( Mandatory=$false, ValueFromPipelineByPropertyName )]
         [Alias('Password')]
         [string] $TargetPassword,
 
+        # Name of the SQL database to publish the dacpac to.
         [Parameter( Mandatory, ValueFromPipelineByPropertyName )]
         [Alias('DatabaseName', 'Database')]
         [ValidateNotNullOrEmpty()]
         [string] $TargetDatabaseName,
 
+        # Flag if the SQL Server is a Azure SQL Server.
         [Parameter( ValueFromPipelineByPropertyName )]
         [ValidateNotNullOrEmpty()]
         [switch] $AzureSql,
 
+        # Flag if surplus contraints should be dropped.
         [ValidateNotNullOrEmpty()]
         [bool] $DropConstraintsNotInSource = $false,
 
+        # Flag if surplus triggers should be dropped.
         [ValidateNotNullOrEmpty()]
         [bool] $DropDmlTriggersNotInSource = $false,
 
+        # Flag if surplus properties should be dropped.
         [ValidateNotNullOrEmpty()]
         [bool] $DropExtendedPropertiesNotInSource = $false,
 
+        # Flag if surplus indices should be dropped.
         [ValidateNotNullOrEmpty()]
         [bool] $DropIndexesNotInSource = $false,
 
+        # Flag if surplus objects should be dropped.
         [ValidateNotNullOrEmpty()]
         [bool] $DropObjectsNotInSource = $false,
 
+        # Flag if surplus permissions should be dropped.
         [ValidateNotNullOrEmpty()]
         [bool] $DropPermissionsNotInSource = $false,
 
+        # Flag if surplus role members should be dropped.
         [ValidateNotNullOrEmpty()]
         [bool] $DropRoleMembersNotInSource = $false,
 
+        # Flag if surplus statistics should be dropped.
         [ValidateNotNullOrEmpty()]
         [bool] $DropStatisticsNotInSource = $false,
 
+        # Timeout is seconds for the execution.
         [ValidateNotNullOrEmpty()]
         [int] $Timeout,
 
+        # Values for the variables used in the dacpac.
         [ValidateNotNull()]
         [hashtable] $Variables = @{}
     )
