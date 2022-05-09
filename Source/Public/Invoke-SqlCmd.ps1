@@ -2,6 +2,16 @@ function Invoke-SqlCmd
 {
     <#
 
+    .SYNOPSIS
+    Executes SQLCMD
+
+    .DESCRIPTION
+    Wrapper tp the commandline tool SQLCMD.
+    It provides parameter validation, output and error handling.
+
+    .NOTES
+    Check https://github.com/abbgrade/PsSqlClient and https://github.com/abbgrade/PsSmo if one of them already supports your use case. They provide better PowerShell integration.
+
     .LINK
     https://docs.microsoft.com/de-de/sql/tools/sqlcmd-utility?view=sql-server-ver15
 
@@ -9,15 +19,18 @@ function Invoke-SqlCmd
 
     [CmdletBinding()]
     param(
+        # Path to the executed SQL script file.
         [Parameter( Mandatory, ParameterSetName='File' )]
         [ValidateScript({ $_.Exists })]
         [Alias('File')]
         [System.IO.FileInfo] $InputFile,
 
+        # Executed SQL script source.
         [Parameter( Mandatory, ParameterSetName='Command' )]
         [ValidateNotNullOrEmpty()]
         [string] $Command,
 
+        # Name of the SQL Server Instance.
         [Parameter( Mandatory, ValueFromPipelineByPropertyName )]
         [Alias('DataSource')]
         [ValidateNotNullOrEmpty()]
@@ -32,24 +45,30 @@ function Invoke-SqlCmd
         [Parameter( ValueFromPipelineByPropertyName )]
         [string] $AccessToken,
 
+        # Name fo the SQL Database.
         [Parameter( ValueFromPipelineByPropertyName )]
         [ValidateNotNullOrEmpty()]
         [Alias('Database')]
         [string] $DatabaseName,
 
+        # Minimum event severity to include in output.
         [ValidateRange(-1, 30)]
         [int] $ErrorLevel = 0,
 
+        # Minimum event severity to interpret as error.
         [ValidateRange(-1, 30)]
         [int] $ErrorSeverityLevel = 10,
 
+        # Flag if a error must terminate the execution.
         [ValidateNotNullOrEmpty()]
         [switch] $TerminateOnError,
 
+        # Timeout in seconds for the execution.
         [Parameter( ValueFromPipelineByPropertyName )]
         [Alias('ConnectionTimeout')]
         [int] $Timeout,
 
+        # Values for variables, used in the script.
         [hashtable] $Variables
     )
 
