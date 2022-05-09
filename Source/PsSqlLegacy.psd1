@@ -69,11 +69,15 @@ Description = 'PowerShell Wrapper for Legacy Tools SqlCmd and SqlPackage.'
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = @()
+FunctionsToExport = @(
+    'Initialize-SqlCmd',
+    'Initialize-SqlPackage',
+    'Invoke-SqlCmd',
+    'Invoke-SqlPackage'
+)
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
-CmdletsToExport = 'Invoke-SqlCmd', 'Invoke-SqlPackage', 'Initialize-SqlCmd',
-               'Initialize-SqlPackage'
+CmdletsToExport = @()
 
 # Variables to export from this module
 VariablesToExport = @()
@@ -127,7 +131,7 @@ PrivateData = @{
 # HelpInfoURI = ''
 
 # Default prefix for commands exported from this module. Override the default prefix using Import-Module -Prefix.
-DefaultCommandPrefix = ''
+DefaultCommandPrefix = 'Legacy'
 
 }
 
