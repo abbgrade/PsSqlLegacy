@@ -1,8 +1,13 @@
+#region InvokeBuild
+
 task UpdateBuildTasks {
 	Invoke-WebRequest `
 		-Uri 'https://raw.githubusercontent.com/abbgrade/PsBuildTasks/main/Powershell/Build.Tasks.ps1' `
 		-OutFile "$PSScriptRoot\Tasks\Build.Tasks.ps1"
 }
+
+#endregion
+#region GitHub Actions
 
 task UpdateValidationWorkflow {
     Invoke-WebRequest `
@@ -22,11 +27,26 @@ task UpdateReleaseWorkflow {
         -OutFile "$PSScriptRoot\.github\workflows\release.yml"
 }
 
+#endregion
+#region GitHub Pages
+
+task UpdateIndexPage {
+    Invoke-WebRequest `
+        -Uri 'https://raw.githubusercontent.com/abbgrade/PsBuildTasks/main/docs/index.md' `
+        -OutFile "$PSScriptRoot\docs\index.md"
+}
+
+#endregion
+#region VsCode
+
 task UpdateVsCodeTasks {
     Invoke-WebRequest `
         -Uri 'https://raw.githubusercontent.com/abbgrade/PsBuildTasks/main/VsCode/tasks.json' `
         -OutFile "$PSScriptRoot\.vscode\tasks.json"
 }
+
+#endregion
+#region PsBuildTasks
 
 task UpdatePsBuildTasksTasks {
     Invoke-WebRequest `
@@ -34,4 +54,6 @@ task UpdatePsBuildTasksTasks {
         -OutFile "$PSScriptRoot\tasks\PsBuild.Tasks.ps1"
 }
 
-task UpdatePsBuildTasks -Jobs UpdateBuildTasks, UpdateValidationWorkflow, UpdatePreReleaseWorkflow, UpdateReleaseWorkflow, UpdateVsCodeTasks, UpdatePsBuildTasksTasks
+#endregion
+
+task UpdatePsBuildTasks -Jobs UpdateBuildTasks, UpdateValidationWorkflow, UpdatePreReleaseWorkflow, UpdateIndexPage, UpdateReleaseWorkflow, UpdateVsCodeTasks, UpdatePsBuildTasksTasks
