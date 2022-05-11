@@ -31,13 +31,8 @@ task Doc.Init -Jobs Import, Import.platyPs, Doc.Init.Directory, {
     New-MarkdownHelp -Module $ModuleName -OutputFolder $DocumentationDirectory -Force:$ForceDocInit -ErrorAction Continue
 }
 
-$IncludeDoc = $true
-if ( $SkipDoc ) {
-    $IncludeDoc = $false
-}
-
 # Synopsis: Update the markdown documentation.
-task Doc.Update -If:$IncludeDoc -Jobs Import, Import.platyPs, Doc.Init, {
+task Doc.Update -Jobs Import, Import.platyPs, Doc.Init, {
     Update-MarkdownHelp -Path $DocumentationDirectory
 }
 
