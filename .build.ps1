@@ -29,10 +29,10 @@ param(
 
 $ModuleName = 'PsSqlLegacy'
 
-. $PsScriptRoot\Tasks\Build.Tasks.ps1
-. $PSScriptRoot\Tasks\Dependencies.Tasks.ps1
-. $PSScriptRoot\Tasks\PsBuild.Tasks.ps1
-. $PSScriptRoot\Tasks\Testdata.Tasks.ps1
+. $PsScriptRoot\tasks\Build.Tasks.ps1
+. $PSScriptRoot\tasks\Dependencies.Tasks.ps1
+. $PSScriptRoot\tasks\PsBuild.Tasks.ps1
+. $PSScriptRoot\tasks\Testdata.Tasks.ps1
 
 # Synopsis: Default task.
 task . Build
