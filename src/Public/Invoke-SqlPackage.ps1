@@ -27,13 +27,17 @@ function Invoke-SqlPackage
         [Parameter( Mandatory, ParameterSetName='Publish' )]
         [switch] $Publish,
 
+        [Parameter( Mandatory, ParameterSetName='Extract' )]
+        [switch] $Extract,
+
         # Path to the dacpac file.
-        [Parameter( Mandatory )]
-        [ValidateScript({ $_.Exists })]
+        [Parameter( Mandatory, ParameterSetName='Publish' )]
+        [Parameter( Mandatory=$false, ParameterSetName='Extract' )]
+        # [ValidateScript({ $_.Exists })]
         [System.IO.FileInfo] $DacPac,
 
         # Name of the SQL Server Instance to publish the dacpac to.
-        [Parameter( Mandatory, ValueFromPipelineByPropertyName )]
+        [Parameter( Mandatory, ParameterSetName='Publish', ValueFromPipelineByPropertyName )]
         [Alias('ServerInstance', 'DataSource')]
         [ValidateNotNullOrEmpty()]
         [string] $TargetServerName,
@@ -49,10 +53,28 @@ function Invoke-SqlPackage
         [string] $TargetPassword,
 
         # Name of the SQL database to publish the dacpac to.
-        [Parameter( Mandatory, ValueFromPipelineByPropertyName )]
+        [Parameter( Mandatory, ParameterSetName='Publish', ValueFromPipelineByPropertyName )]
         [Alias('DatabaseName', 'Database')]
         [ValidateNotNullOrEmpty()]
         [string] $TargetDatabaseName,
+
+        # Name of the SQL Server Instance to publish the dacpac to.
+        [Parameter( Mandatory, ParameterSetName='Extract', ValueFromPipelineByPropertyName )]
+        [ValidateNotNullOrEmpty()]
+        [string] $SourceServerName,
+
+        # Username for the login.
+        [Parameter( Mandatory=$false, ValueFromPipelineByPropertyName )]
+        [string] $SourceUser,
+
+        # Password for the login.
+        [Parameter( Mandatory=$false, ValueFromPipelineByPropertyName )]
+        [string] $SourcePassword,
+
+        # Name of the SQL database to publish the dacpac to.
+        [Parameter( Mandatory, ParameterSetName='Extract', ValueFromPipelineByPropertyName )]
+        [ValidateNotNullOrEmpty()]
+        [string] $SourceDatabaseName,
 
         # Flag if the SQL Server is a Azure SQL Server.
         [Parameter( ValueFromPipelineByPropertyName )]
@@ -145,6 +167,24 @@ function Invoke-SqlPackage
             $arguments += "/p:DropPermissionsNotInSource=""$DropPermissionsNotInSource"""
             $arguments += "/p:DropRoleMembersNotInSource=""$DropRoleMembersNotInSource"""
             $arguments += "/p:DropStatisticsNotInSource=""$DropStatisticsNotInSource"""
+        }
+        Extract {
+
+            $arguments += '/Action:Extract'
+
+            $arguments += "/TargetFile:""$DacPac"""
+
+            $arguments += "/SourceDatabaseName:""$SourceDatabaseName"""
+            $arguments += "/SourceServerName:""$SourceServerName"""
+
+            if ( $SourceUser ) {
+                $arguments += "/SourceUser:""$SourceUser"""
+                $arguments += "/SourcePassword:""$SourcePassword"""
+            }
+
+            if ( $Timeout -ne $null ) {
+                $arguments += "/SourceTimeout:$Timeout"
+            }
         }
         default {
             throw "ParameterSet $( $PSCmdlet.ParameterSetName ) not implemented."
