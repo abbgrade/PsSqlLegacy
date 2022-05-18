@@ -14,18 +14,31 @@ Executes SQLCMD
 
 ### Script
 ```
-Invoke-LegacySqlPackage -Script <String> -DacPac <FileInfo> -TargetServerName <String> [-TargetUser <String>]
- [-TargetPassword <String>] -TargetDatabaseName <String> [-AzureSql] [-DropConstraintsNotInSource <Boolean>]
+Invoke-LegacySqlPackage -Script <String> [-TargetUser <String>] [-TargetPassword <String>]
+ [-SourceUser <String>] [-SourcePassword <String>] [-AccessToken <String>] [-AzureSql]
+ [-InteractiveAuthentication] [-DropConstraintsNotInSource <Boolean>] [-DropDmlTriggersNotInSource <Boolean>]
+ [-DropExtendedPropertiesNotInSource <Boolean>] [-DropIndexesNotInSource <Boolean>]
+ [-DropObjectsNotInSource <Boolean>] [-DropPermissionsNotInSource <Boolean>]
+ [-DropRoleMembersNotInSource <Boolean>] [-DropStatisticsNotInSource <Boolean>] [-Timeout <Int32>]
+ [-Variables <Hashtable>] [<CommonParameters>]
+```
+
+### Publish
+```
+Invoke-LegacySqlPackage [-Publish] -DacPac <FileInfo> -TargetServerName <String> [-TargetUser <String>]
+ [-TargetPassword <String>] -TargetDatabaseName <String> [-SourceUser <String>] [-SourcePassword <String>]
+ [-AccessToken <String>] [-AzureSql] [-InteractiveAuthentication] [-DropConstraintsNotInSource <Boolean>]
  [-DropDmlTriggersNotInSource <Boolean>] [-DropExtendedPropertiesNotInSource <Boolean>]
  [-DropIndexesNotInSource <Boolean>] [-DropObjectsNotInSource <Boolean>]
  [-DropPermissionsNotInSource <Boolean>] [-DropRoleMembersNotInSource <Boolean>]
  [-DropStatisticsNotInSource <Boolean>] [-Timeout <Int32>] [-Variables <Hashtable>] [<CommonParameters>]
 ```
 
-### Publish
+### Extract
 ```
-Invoke-LegacySqlPackage [-Publish] -DacPac <FileInfo> -TargetServerName <String> [-TargetUser <String>]
- [-TargetPassword <String>] -TargetDatabaseName <String> [-AzureSql] [-DropConstraintsNotInSource <Boolean>]
+Invoke-LegacySqlPackage [-Extract] [-DacPac <FileInfo>] [-TargetUser <String>] [-TargetPassword <String>]
+ -SourceServerName <String> [-SourceUser <String>] [-SourcePassword <String>] [-AccessToken <String>]
+ -SourceDatabaseName <String> [-AzureSql] [-InteractiveAuthentication] [-DropConstraintsNotInSource <Boolean>]
  [-DropDmlTriggersNotInSource <Boolean>] [-DropExtendedPropertiesNotInSource <Boolean>]
  [-DropIndexesNotInSource <Boolean>] [-DropObjectsNotInSource <Boolean>]
  [-DropPermissionsNotInSource <Boolean>] [-DropRoleMembersNotInSource <Boolean>]
@@ -77,15 +90,43 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -DacPac
-Path to the dacpac file.
+### -Extract
+{{ Fill Extract Description }}
 
 ```yaml
-Type: FileInfo
-Parameter Sets: (All)
+Type: SwitchParameter
+Parameter Sets: Extract
 Aliases:
 
 Required: True
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -DacPac
+Path to the dacpac file.
+\[ValidateScript({ $_.Exists })\]
+
+```yaml
+Type: FileInfo
+Parameter Sets: Publish
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+```yaml
+Type: FileInfo
+Parameter Sets: Extract
+Aliases:
+
+Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False
@@ -97,7 +138,7 @@ Name of the SQL Server Instance to publish the dacpac to.
 
 ```yaml
 Type: String
-Parameter Sets: (All)
+Parameter Sets: Publish
 Aliases: ServerInstance, DataSource
 
 Required: True
@@ -142,8 +183,83 @@ Name of the SQL database to publish the dacpac to.
 
 ```yaml
 Type: String
-Parameter Sets: (All)
+Parameter Sets: Publish
 Aliases: DatabaseName, Database
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -SourceServerName
+Name of the SQL Server Instance to publish the dacpac to.
+
+```yaml
+Type: String
+Parameter Sets: Extract
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -SourceUser
+Username for the login.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -SourcePassword
+Password for the login.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -AccessToken
+AccessToken for the login
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -SourceDatabaseName
+Name of the SQL database to publish the dacpac to.
+
+```yaml
+Type: String
+Parameter Sets: Extract
+Aliases:
 
 Required: True
 Position: Named
@@ -154,6 +270,21 @@ Accept wildcard characters: False
 
 ### -AzureSql
 Flag if the SQL Server is a Azure SQL Server.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -InteractiveAuthentication
+Flag if interactive authentication is used.
 
 ```yaml
 Type: SwitchParameter
