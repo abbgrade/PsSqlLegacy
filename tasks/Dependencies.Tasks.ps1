@@ -3,7 +3,7 @@ task InstallBuildDependencies -Jobs {
 }
 
 task InstallTestDependencies -Jobs {
-}, Testdata.Create
+}
 
 task InstallReleaseDependencies -Jobs {
 }
