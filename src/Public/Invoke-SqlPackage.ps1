@@ -1,5 +1,4 @@
-function Invoke-SqlPackage
-{
+function Invoke-SqlPackage {
     <#
 
     .SYNOPSIS
@@ -20,44 +19,76 @@ function Invoke-SqlPackage
     [CmdletBinding()]
     param(
         # Flag if a install script should be created.
-        [Parameter( Mandatory, ParameterSetName='Script' )]
+        [Parameter( Mandatory, ParameterSetName = 'Script' )]
         [string] $Script,
 
         # Flag if a database should be published.
-        [Parameter( Mandatory, ParameterSetName='Publish' )]
+        [Parameter( Mandatory, ParameterSetName = 'Publish' )]
         [switch] $Publish,
 
+        [Parameter( Mandatory, ParameterSetName = 'Extract' )]
+        [switch] $Extract,
+
         # Path to the dacpac file.
-        [Parameter( Mandatory )]
-        [ValidateScript({ $_.Exists })]
+        [Parameter( Mandatory, ParameterSetName = 'Publish' )]
+        [Parameter( Mandatory = $false, ParameterSetName = 'Extract' )]
+        # [ValidateScript({ $_.Exists })]
         [System.IO.FileInfo] $DacPac,
 
         # Name of the SQL Server Instance to publish the dacpac to.
-        [Parameter( Mandatory, ValueFromPipelineByPropertyName )]
+        [Parameter( Mandatory, ParameterSetName = 'Publish', ValueFromPipelineByPropertyName )]
         [Alias('ServerInstance', 'DataSource')]
         [ValidateNotNullOrEmpty()]
         [string] $TargetServerName,
 
         # Username for the login.
-        [Parameter( Mandatory=$false, ValueFromPipelineByPropertyName )]
+        [Parameter( Mandatory = $false, ValueFromPipelineByPropertyName )]
         [Alias('Username')]
         [string] $TargetUser,
 
         # Password for the login.
-        [Parameter( Mandatory=$false, ValueFromPipelineByPropertyName )]
+        [Parameter( Mandatory = $false, ValueFromPipelineByPropertyName )]
         [Alias('Password')]
         [string] $TargetPassword,
 
         # Name of the SQL database to publish the dacpac to.
-        [Parameter( Mandatory, ValueFromPipelineByPropertyName )]
+        [Parameter( Mandatory, ParameterSetName = 'Publish', ValueFromPipelineByPropertyName )]
         [Alias('DatabaseName', 'Database')]
         [ValidateNotNullOrEmpty()]
         [string] $TargetDatabaseName,
+
+        # Name of the SQL Server Instance to publish the dacpac to.
+        [Parameter( Mandatory, ParameterSetName = 'Extract', ValueFromPipelineByPropertyName )]
+        [ValidateNotNullOrEmpty()]
+        [string] $SourceServerName,
+
+        # Username for the login.
+        [Parameter( Mandatory = $false, ValueFromPipelineByPropertyName )]
+        [string] $SourceUser,
+
+        # Password for the login.
+        [Parameter( Mandatory = $false, ValueFromPipelineByPropertyName )]
+        [string] $SourcePassword,
+
+        # AccessToken for the login
+        [Parameter( ValueFromPipelineByPropertyName )]
+        [ValidateNotNullOrEmpty()]
+        [string] $AccessToken,
+
+        # Name of the SQL database to publish the dacpac to.
+        [Parameter( Mandatory, ParameterSetName = 'Extract', ValueFromPipelineByPropertyName )]
+        [ValidateNotNullOrEmpty()]
+        [string] $SourceDatabaseName,
 
         # Flag if the SQL Server is a Azure SQL Server.
         [Parameter( ValueFromPipelineByPropertyName )]
         [ValidateNotNullOrEmpty()]
         [switch] $AzureSql,
+
+        # Flag if interactive authentication is used.
+        [Parameter( ValueFromPipelineByPropertyName )]
+        [ValidateNotNullOrEmpty()]
+        [switch] $InteractiveAuthentication,
 
         # Flag if surplus contraints should be dropped.
         [ValidateNotNullOrEmpty()]
@@ -97,7 +128,11 @@ function Invoke-SqlPackage
 
         # Values for the variables used in the dacpac.
         [ValidateNotNull()]
-        [hashtable] $Variables = @{}
+        [hashtable] $Variables = @{},
+
+        # Force the action and accept the risk of data loss.
+        [Parameter( ParameterSetName = 'Publish' )]
+        [switch] $Force
     )
 
     # soon...
@@ -120,7 +155,17 @@ function Invoke-SqlPackage
             $arguments += "/SourceFile:""$DacPac"""
 
             if ( $AzureSql ) {
-                $arguments += "/TargetConnectionString:""Server='$TargetServerName';Authentication=Active Directory Integrated;Database='$TargetDatabaseName';"""
+                if ( $AccessToken ) {
+                    $arguments += "/AccessToken:$AccessToken"
+                    $arguments += "/TargetDatabaseName:""$TargetDatabaseName"""
+                    $arguments += "/TargetServerName:""$TargetServerName"""
+                } else {
+                    $Authentication = 'Active Directory Integrated'
+                    if ( $InteractiveAuthentication ) {
+                        $Authentication = 'Active Directory Interactive'
+                    }
+                    $arguments += "/TargetConnectionString:""Server='$TargetServerName';Authentication=$Authentication;Database='$TargetDatabaseName';"""
+                }
             }
             else {
 
@@ -145,13 +190,35 @@ function Invoke-SqlPackage
             $arguments += "/p:DropPermissionsNotInSource=""$DropPermissionsNotInSource"""
             $arguments += "/p:DropRoleMembersNotInSource=""$DropRoleMembersNotInSource"""
             $arguments += "/p:DropStatisticsNotInSource=""$DropStatisticsNotInSource"""
+
+            if ( $Force.IsPresent ) {
+                $arguments += '/p:BlockOnPossibleDataLoss=False'
+            }
+        }
+        Extract {
+
+            $arguments += '/Action:Extract'
+
+            $arguments += "/TargetFile:""$DacPac"""
+
+            $arguments += "/SourceDatabaseName:""$SourceDatabaseName"""
+            $arguments += "/SourceServerName:""$SourceServerName"""
+
+            if ( $SourceUser ) {
+                $arguments += "/SourceUser:""$SourceUser"""
+                $arguments += "/SourcePassword:""$SourcePassword"""
+            }
+
+            if ( $Timeout -ne $null ) {
+                $arguments += "/SourceTimeout:$Timeout"
+            }
         }
         default {
             throw "ParameterSet $( $PSCmdlet.ParameterSetName ) not implemented."
         }
     }
 
-    foreach( $variable in $Variables.GetEnumerator() ) {
+    foreach ( $variable in $Variables.GetEnumerator() ) {
         $arguments += "/Variables:$( $variable.Key )=""$( $variable.Value )"""
     }
 
@@ -199,15 +266,14 @@ function Invoke-SqlPackage
         if ( -not $Timeout ) {
             $process.WaitForExit()
             $returnCode = $process.ExitCode
-        } elseif ( $process.WaitForExit( $timeoutMS ) )
-        {
-            $returnCode = $process.ExitCode
-        } elseif ( $process.HasExited )
-        {
+        }
+        elseif ( $process.WaitForExit( $timeoutMS ) ) {
             $returnCode = $process.ExitCode
         }
-        else
-        {
+        elseif ( $process.HasExited ) {
+            $returnCode = $process.ExitCode
+        }
+        else {
             Write-Verbose "Invoke-SqlPackage: Timeout $Timeout reached."
             $process.Kill()
             $returnCode = -1
@@ -234,8 +300,7 @@ function Invoke-SqlPackage
         $returnCode = -1
     }
 
-    if ( $returnCode -ne 0 )
-    {
+    if ( $returnCode -ne 0 ) {
         throw "SqlPackage exit code $returnCode; err: '$standardError'."
     }
 
