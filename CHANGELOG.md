@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Force parameter for `Invoke-SqlPackage -Publish`.
+
 ## [0.1.0] - 2022-06-01
 
 ### Added

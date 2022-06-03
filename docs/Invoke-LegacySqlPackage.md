@@ -31,7 +31,8 @@ Invoke-LegacySqlPackage [-Publish] -DacPac <FileInfo> -TargetServerName <String>
  [-DropDmlTriggersNotInSource <Boolean>] [-DropExtendedPropertiesNotInSource <Boolean>]
  [-DropIndexesNotInSource <Boolean>] [-DropObjectsNotInSource <Boolean>]
  [-DropPermissionsNotInSource <Boolean>] [-DropRoleMembersNotInSource <Boolean>]
- [-DropStatisticsNotInSource <Boolean>] [-Timeout <Int32>] [-Variables <Hashtable>] [<CommonParameters>]
+ [-DropStatisticsNotInSource <Boolean>] [-Timeout <Int32>] [-Variables <Hashtable>] [-Force]
+ [<CommonParameters>]
 ```
 
 ### Extract
@@ -444,6 +445,21 @@ Aliases:
 Required: False
 Position: Named
 Default value: @{}
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Force
+Force the action and accept the risk of data loss.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: Publish
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

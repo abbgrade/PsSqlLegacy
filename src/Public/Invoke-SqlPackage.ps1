@@ -128,7 +128,11 @@ function Invoke-SqlPackage {
 
         # Values for the variables used in the dacpac.
         [ValidateNotNull()]
-        [hashtable] $Variables = @{}
+        [hashtable] $Variables = @{},
+
+        # Force the action and accept the risk of data loss.
+        [Parameter( ParameterSetName = 'Publish' )]
+        [switch] $Force
     )
 
     # soon...
@@ -186,6 +190,10 @@ function Invoke-SqlPackage {
             $arguments += "/p:DropPermissionsNotInSource=""$DropPermissionsNotInSource"""
             $arguments += "/p:DropRoleMembersNotInSource=""$DropRoleMembersNotInSource"""
             $arguments += "/p:DropStatisticsNotInSource=""$DropStatisticsNotInSource"""
+
+            if ( $Force.IsPresent ) {
+                $arguments += '/p:BlockOnPossibleDataLoss=False'
+            }
         }
         Extract {
 
