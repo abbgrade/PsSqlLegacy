@@ -10,3 +10,4 @@ jobs:
       module-name: PsSqlLegacy
     secrets:
       ps-gallery-key: ${{ secrets.PS_GALLERY_KEY }}
+
