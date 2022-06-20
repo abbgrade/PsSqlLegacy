@@ -464,6 +464,21 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -ExcludeObjectTypes
+Object types that should be ignored
+
+```yaml
+Type: String
+Parameter Sets: Publish
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
 ### CommonParameters
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
