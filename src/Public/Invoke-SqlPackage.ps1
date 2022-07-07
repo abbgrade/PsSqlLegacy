@@ -124,7 +124,8 @@ function Invoke-SqlPackage {
 
         # A semicolon-delimited list of object types that should be ignored during deployment
         [Parameter( Mandatory = $false, ParameterSetName = 'Publish', ValueFromPipelineByPropertyName )]
-        [string] $ExcludeObjectTypes,
+        [Parameter( Mandatory = $false, ParameterSetName = 'Script', ValueFromPipelineByPropertyName )]
+        [string[]] $ExcludeObjectTypes,
 
         # Timeout is seconds for the execution.
         [ValidateNotNullOrEmpty()]
@@ -194,11 +195,11 @@ function Invoke-SqlPackage {
             $arguments += "/p:DropPermissionsNotInSource=""$DropPermissionsNotInSource"""
             $arguments += "/p:DropRoleMembersNotInSource=""$DropRoleMembersNotInSource"""
             $arguments += "/p:DropStatisticsNotInSource=""$DropStatisticsNotInSource"""
-            
+
             if ($ExcludeObjectTypes ) {
-                $arguments += "/p:ExcludeObjectTypes=""$ExcludeObjectTypes"""
+                $arguments += "/p:ExcludeObjectTypes=""$( $ExcludeObjectTypes -join ';' )"""
             }
-            
+
 
             if ( $Force.IsPresent ) {
                 $arguments += '/p:BlockOnPossibleDataLoss=False'
