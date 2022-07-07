@@ -25,3 +25,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Invoke-SqlCmd Command.
 - Invoke-SqlPackage command.
+
+<!-- markdownlint-configure-file {"MD024": { "siblings_only": true } } -->
