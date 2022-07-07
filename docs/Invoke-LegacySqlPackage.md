@@ -19,8 +19,8 @@ Invoke-LegacySqlPackage -Script <String> [-TargetUser <String>] [-TargetPassword
  [-InteractiveAuthentication] [-DropConstraintsNotInSource <Boolean>] [-DropDmlTriggersNotInSource <Boolean>]
  [-DropExtendedPropertiesNotInSource <Boolean>] [-DropIndexesNotInSource <Boolean>]
  [-DropObjectsNotInSource <Boolean>] [-DropPermissionsNotInSource <Boolean>]
- [-DropRoleMembersNotInSource <Boolean>] [-DropStatisticsNotInSource <Boolean>] [-Timeout <Int32>]
- [-Variables <Hashtable>] [<CommonParameters>]
+ [-DropRoleMembersNotInSource <Boolean>] [-DropStatisticsNotInSource <Boolean>]
+ [-ExcludeObjectTypes <String[]>] [-Timeout <Int32>] [-Variables <Hashtable>] [<CommonParameters>]
 ```
 
 ### Publish
@@ -31,8 +31,8 @@ Invoke-LegacySqlPackage [-Publish] -DacPac <FileInfo> -TargetServerName <String>
  [-DropDmlTriggersNotInSource <Boolean>] [-DropExtendedPropertiesNotInSource <Boolean>]
  [-DropIndexesNotInSource <Boolean>] [-DropObjectsNotInSource <Boolean>]
  [-DropPermissionsNotInSource <Boolean>] [-DropRoleMembersNotInSource <Boolean>]
- [-DropStatisticsNotInSource <Boolean>] [-Timeout <Int32>] [-Variables <Hashtable>] [-Force]
- [<CommonParameters>]
+ [-DropStatisticsNotInSource <Boolean>] [-ExcludeObjectTypes <String[]>] [-Timeout <Int32>]
+ [-Variables <Hashtable>] [-Force] [<CommonParameters>]
 ```
 
 ### Extract
@@ -416,6 +416,21 @@ Required: False
 Position: Named
 Default value: False
 Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ExcludeObjectTypes
+A semicolon-delimited list of object types that should be ignored during deployment
+
+```yaml
+Type: String[]
+Parameter Sets: Script, Publish
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
