@@ -1,0 +1,6 @@
+[submodule "tasks/PsSqlTestTasks"]
+	path = tasks/PsSqlTestTasks
+	url = https://github.com/abbgrade/PsSqlTestTasks.git
+[submodule "test/sql-server-samples"]
+	path = test/sql-server-samples
+	url = https://github.com/microsoft/sql-server-samples.git
