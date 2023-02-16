@@ -7,11 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2023-02-16
+
+### Added
+
+- Azure support for Extract action.
+
 ## [0.3.0] - 2022-07-07
 
 ### Added
 
-- ExcludeObjectTypes parameter for Publish action
+- ExcludeObjectTypes parameter for Publish action.
 
 ## [0.2.0] - 2022-06-01
 
@@ -25,3 +31,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Invoke-SqlCmd Command.
 - Invoke-SqlPackage command.
+
+<!-- markdownlint-configure-file {"MD024": { "siblings_only": true } } -->

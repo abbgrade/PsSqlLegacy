@@ -211,16 +211,32 @@ function Invoke-SqlPackage {
 
             $arguments += "/TargetFile:""$DacPac"""
 
-            $arguments += "/SourceDatabaseName:""$SourceDatabaseName"""
-            $arguments += "/SourceServerName:""$SourceServerName"""
-
-            if ( $SourceUser ) {
-                $arguments += "/SourceUser:""$SourceUser"""
-                $arguments += "/SourcePassword:""$SourcePassword"""
+            if ( $AzureSql ) {
+                if ( $AccessToken ) {
+                    $arguments += "/AccessToken:$AccessToken"
+                    $arguments += "/SourceDatabaseName:""$SourceDatabaseName"""
+                    $arguments += "/SourceServerName:""$SourceServerName"""
+                } else {
+                    $Authentication = 'Active Directory Integrated'
+                    if ( $InteractiveAuthentication ) {
+                        $Authentication = 'Active Directory Interactive'
+                    }
+                    $arguments += "/SourceConnectionString:""Server='$SourceServerName';Authentication=$Authentication;Database='$SourceDatabaseName';"""
+                }
             }
+            else {
 
-            if ( $Timeout -ne $null ) {
-                $arguments += "/SourceTimeout:$Timeout"
+                $arguments += "/SourceDatabaseName:""$SourceDatabaseName"""
+                $arguments += "/SourceServerName:""$SourceServerName"""
+
+                if ( $SourceUser ) {
+                    $arguments += "/SourceUser:""$SourceUser"""
+                    $arguments += "/SourcePassword:""$SourcePassword"""
+                }
+    
+                if ( $Timeout -ne $null ) {
+                    $arguments += "/SourceTimeout:$Timeout"
+                }
             }
         }
         default {
